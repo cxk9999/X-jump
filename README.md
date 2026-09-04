@@ -18,7 +18,8 @@ https://cxk9999.github.io/X-jump/
 | `https://twitter.com/elonmusk` | `twitter://user?screen_name=elonmusk` |
 | `https://x.com/mattshumer_/status/2095609734845927525` | `twitter://status?id=2095609734845927525` |
 | `https://twitter.com/mattshumer_/status/2095609734845927525` | `twitter://status?id=2095609734845927525` |
-| 其他未知链接（`/home`、`/messages`、`/i/bookmarks` 等） | `twitter://`（直接打开 X 首页） |
+
+> 说明：仅对「用户主页 / 推文」这两类真实链接做跳转；`/home`、`/messages`、`/i/...` 等功能页与接口**一律不劫持**，保持网页/应用正常打开，避免误伤与跳转循环。
 
 ## Quantumult X 配置
 
@@ -43,15 +44,12 @@ https://cxk9999.github.io/X-jump/qx_rewrite.conf, tag=X-jump, update-interval=86
 # 用户主页：x.com/用户名 → twitter://user?screen_name=用户名
 ^https?:\/\/x\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})\/?(\?.*)?$ url 307 twitter://user?screen_name=$1
 ^https?:\/\/twitter\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})\/?(\?.*)?$ url 307 twitter://user?screen_name=$1
-# 已知功能页（home/messages 等）→ X 首页；其余未知路径不劫持
-^https?:\/\/x\.com\/(home|messages|explore|notifications|search|settings|compose)\/?(\?.*)?$ url 307 twitter://
-^https?:\/\/twitter\.com\/(home|messages|explore|notifications|search|settings|compose)\/?(\?.*)?$ url 307 twitter://
 
 [mitm]
 hostname = x.com,twitter.com
 ```
 
-> ⚠️ 重要：规则**只能窄不能宽**。不要把 `\/.*` 之类的宽匹配加回来——那会让 X 应用自身的接口请求也被跳转，导致 X 断网。远程订阅版与手动版内容一致。
+> ⚠️ 重要：规则**只能窄不能宽**。不要把 `\/.*` 之类的宽匹配加回来——那会让 X 应用自身的接口请求也被跳转，导致 X 断网。也不建议加 `home/messages` 等功能页规则（若 X 分身是"网页壳"，可能造成跳转循环）。远程订阅版与手动版内容一致。
 >
 > 💡 采用 `url 307` **直接 307 到 `twitter://` 深链**，不再经过中间页/JS：①307 不被 Safari 启发式缓存；②HTTP 重定向到自定义协议 Safari 允许（JS 非手势跳转会被 Safari 拦截）。
 
