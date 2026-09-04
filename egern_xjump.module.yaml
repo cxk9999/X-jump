@@ -1,0 +1,39 @@
+# X-jump - Egern 模块
+# 将 X/Twitter 网页链接 307 重定向为 twitter:// Deep Link，唤醒已安装的 X 分身应用。
+# 仅劫持「用户主页 / 推文」两类真实链接，接口(i/api/...)、功能页(home/messages/...)一律放行，
+# 不影响 X 应用与网页的正常网络。
+#
+# 使用方法（Egern 主配置 modules 中新增一项）：
+#   modules:
+#     - name: "X-jump"
+#       url: "https://cxk9999.github.io/X-jump/egern_xjump.module.yaml"
+#       update_interval: 86400
+#       enabled: true
+# 启用前需在 Egern 中安装并信任 MitM 根证书（MitM 仅对 x.com / twitter.com 两个域名生效）。
+
+name: "X-jump"
+description: "将 X/Twitter 网页链接 307 重定向为 twitter:// 深链，唤醒已安装的 X 分身应用。仅劫持用户主页与推文，接口/功能页一律放行。"
+author: "cxk9999"
+homepage: "https://cxk9999.github.io/X-jump/"
+icon: "bird"
+
+url_rewrites:
+  # 推文：x.com/用户名/status/推文ID → twitter://status?id=ID（用户名段排除保留路径）
+  - match: '^https?://x\.com/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+/status/(\d+)'
+    location: 'twitter://status?id=$1'
+    status_code: 307
+  - match: '^https?://twitter\.com/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+/status/(\d+)'
+    location: 'twitter://status?id=$1'
+    status_code: 307
+  # 用户主页：x.com/用户名 → twitter://user?screen_name=用户名（单段路径，排除保留路径）
+  - match: '^https?://x\.com/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})(?:/|\?.*)?$'
+    location: 'twitter://user?screen_name=$1'
+    status_code: 307
+  - match: '^https?://twitter\.com/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})(?:/|\?.*)?$'
+    location: 'twitter://user?screen_name=$1'
+    status_code: 307
+
+mitm:
+  hostnames:
+    - "x.com"
+    - "twitter.com"
