@@ -7,8 +7,8 @@
 #   modules:
 #     - name: "X-jump"
 #       url: "https://cxk9999.github.io/X-jump/egern_xjump.module.yaml"
-#       update_interval: 86400
 #       enabled: true
+# 更新间隔请在 Egern 模块设置界面自行设置。
 # 启用前需在 Egern 中安装并信任 MitM 根证书（MitM 仅对 x.com / twitter.com 两个域名生效）。
 
 name: "X-jump"
