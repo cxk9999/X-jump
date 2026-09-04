@@ -1,0 +1,17 @@
+#!name = X-jump
+#!desc = 将 X/Twitter 网页链接 307 重定向为 twitter:// Deep Link，唤醒已安装的 X 分身应用。仅劫持「用户主页 / 推文」两类真实链接，接口与功能页一律放行，不影响 X 正常网络。
+#!author = cxk9999
+#!homepage = https://cxk9999.github.io/X-jump/
+#!system = iOS
+#!tag = X,Twitter,DeepLink
+
+[Rewrite]
+# 推文：x.com/用户名/status/推文ID → twitter://status?id=ID（用户名段排除保留路径）
+^https?:\/\/x\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+\/status\/(\d+) 307 twitter://status?id=$1
+^https?:\/\/twitter\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+\/status\/(\d+) 307 twitter://status?id=$1
+# 用户主页：x.com/用户名 → twitter://user?screen_name=用户名（单段路径，排除保留路径）
+^https?:\/\/x\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})\/?(\?.*)?$ 307 twitter://user?screen_name=$1
+^https?:\/\/twitter\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)([A-Za-z0-9_]{1,15})\/?(\?.*)?$ 307 twitter://user?screen_name=$1
+
+[Mitm]
+hostname = x.com, twitter.com
