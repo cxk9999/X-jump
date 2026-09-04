@@ -2,9 +2,9 @@
 
 将 X(Twitter) 网页链接自动转换为 Twitter Deep Link，并唤醒 iOS 已安装的 X 分身应用。
 
-> 配合 Quantumult X（圈 X）MitM + Rewrite 使用。
+> 配合 Quantumult X（圈 X）或 Loon 使用。
 >
-> 流程：点击 X 链接 → Quantumult X Rewrite（307）→ `twitter://` Deep Link → 唤醒 X 分身
+> 流程：点击 X 链接 → MitM/Rewrite（307）→ `twitter://` Deep Link → 唤醒 X 分身
 
 ## 访问地址
 
@@ -53,6 +53,36 @@ hostname = x.com,twitter.com
 >
 > 💡 采用 `url 307` **直接 307 到 `twitter://` 深链**，不再经过中间页/JS：①307 不被 Safari 启发式缓存；②HTTP 重定向到自定义协议 Safari 允许（JS 非手势跳转会被 Safari 拦截）。
 
+## Loon 配置
+
+### 方式一：插件（推荐，最省事，已含 MitM）
+
+Loon → 插件 → 右上角 + → 从 URL 添加：
+
+```
+https://cxk9999.github.io/X-jump/loon_xjump.plugin
+```
+
+插件内已包含 Rewrite 规则 + MitM（`x.com, twitter.com`），安装即用，后续更新在插件列表里刷新即可。
+
+### 方式二：远程重写订阅
+
+Loon 主配置 `[Remote Rewrite]` 下新增一行：
+
+```
+https://cxk9999.github.io/X-jump/loon_rewrite.conf, tag=X-jump, enabled=true
+```
+
+同时需在 `[MITM]` 中启用：
+
+```
+hostname = x.com, twitter.com
+```
+
+> ⚠️ 与圈 X 版完全一致的安全原则：只劫持「用户主页 / 推文」，`/i/...`、`/api/...`、功能页、子域名一律放行，不影响 X 应用与网页的正常网络。
+>
+> 💡 语法使用 Loon 旧版重写语法（`正则 307 twitter://目标`），兼容 Loon 3.x；307 直链不经中间页，且不被 Safari 启发式缓存。
+
 ## 部署
 
 - 仓库分支 `main`，站点根目录 `/`（Settings → Pages → Deploy from a branch → main → /(root)）
@@ -60,7 +90,7 @@ hostname = x.com,twitter.com
 
 ## 注意事项
 
-- 圈 X 能否拦截所有 x.com 点击，取决于 iOS 的 Universal Link 是否在系统层先接管。Pages 部署成功后，Rewrite 对 Safari / Telegram 的实际效果仍需真机测试。
+- 工具能否拦截所有 x.com 点击，取决于 iOS 的 Universal Link 是否在系统层先接管。部署成功后，Rewrite 对 Safari / Telegram 的实际效果仍需真机测试。
 - 若 Safari 普通模式不跳转但**无痕模式正常**：是 Safari 缓存了 x.com 的旧响应/旧 302 重定向（登录过网页版 X 后常见）。去 设置 → Safari → 清除历史记录与网站数据（或 高级 → 网站数据 里单独删除 x.com / cxk9999.github.io），即可恢复。
 - 若 X 应用存在证书固定（cert pinning），MitM 本身可能使其断网，此时需放弃 MitM 方案。
 - `twitter://user?screen_name=...` 与 `twitter://status?id=...` 为已验证可用的 Deep Link 格式。
