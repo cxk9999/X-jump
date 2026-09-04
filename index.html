@@ -175,10 +175,16 @@
     window.location.href = target;
   });
 
-  /* 自动跳转：iOS 上会唤起 X 分身应用 */
+  /* 自动跳转：页面加载时立即执行，避免 Safari 拦截"延迟的、非用户手势"的
+     自定义协议跳转；iOS 上会唤起 X 分身应用。 */
+  window.location.replace(target);
+
+  /* 兜底：若 1.2s 后页面仍在前台，说明跳转被拦截，提示用户手动打开 */
   setTimeout(function () {
-    window.location.replace(target);
-  }, 300);
+    if (document.visibilityState === 'visible') {
+      statusEl.textContent = '未自动跳转？请点击下方按钮打开';
+    }
+  }, 1200);
 })();
 </script>
 </body>
