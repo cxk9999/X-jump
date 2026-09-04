@@ -68,18 +68,6 @@
     align-items: center;
     justify-content: center;
   }
-  .btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 999px;
-    background: var(--accent);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .btn:active { opacity: 0.85; }
   .tip {
     color: var(--muted);
     font-size: 12px;
@@ -95,8 +83,7 @@
     <p class="subtitle">X / Twitter 链接 → Deep Link 跳转</p>
     <p class="status" id="status">正在解析链接…</p>
     <div class="link" id="target">twitter://</div>
-    <button class="btn" id="btn">打开 X</button>
-    <p class="tip">配合 Quantumult X Rewrite 使用，自动唤醒已安装的 X 分身应用。</p>
+    <p class="tip">正在唤醒 X 分身应用…</p>
   </main>
 
 <script>
@@ -171,18 +158,15 @@
   }
   targetEl.textContent = target;
 
-  document.getElementById('btn').addEventListener('click', function () {
-    window.location.href = target;
-  });
-
   /* 自动跳转：页面加载时立即执行，避免 Safari 拦截"延迟的、非用户手势"的
      自定义协议跳转；iOS 上会唤起 X 分身应用。 */
   window.location.replace(target);
 
-  /* 兜底：若 1.2s 后页面仍在前台，说明跳转被拦截，提示用户手动打开 */
+  /* 兜底：若 1.2s 后页面仍在前台，说明跳转被拦截（此时只能由用户手势触发，
+     无按钮可用，提示用户刷新重试） */
   setTimeout(function () {
     if (document.visibilityState === 'visible') {
-      statusEl.textContent = '未自动跳转？请点击下方按钮打开';
+      statusEl.textContent = '未自动跳转？请刷新本页重试';
     }
   }, 1200);
 })();
