@@ -6,6 +6,14 @@
 >
 > 流程：点击 X 链接 → MitM/Rewrite（307）→ `twitter://` Deep Link → 唤醒 X 分身
 
+## 访问地址
+
+```
+https://cxk9999.github.io/X-jump/
+```
+
+X-jump 跳转页（GitHub Pages）：打开后自动把 X 链接解析为 `twitter://` 深链并唤起 X 分身应用，可直接访问测试。
+
 ## 支持格式
 
 | 输入链接 | 转换结果 |
