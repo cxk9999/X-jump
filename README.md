@@ -2,7 +2,7 @@
 
 将 X(Twitter) 网页链接自动转换为 Twitter Deep Link，并唤醒 iOS 已安装的 X 分身应用。
 
-> 配合 Quantumult X（圈 X）或 Loon 使用。
+> 配合 Quantumult X（圈 X）、Loon 或 Egern 使用。
 >
 > 流程：点击 X 链接 → MitM/Rewrite（307）→ `twitter://` Deep Link → 唤醒 X 分身
 
@@ -82,6 +82,24 @@ hostname = x.com, twitter.com
 > ⚠️ 与圈 X 版完全一致的安全原则：只劫持「用户主页 / 推文」，`/i/...`、`/api/...`、功能页、子域名一律放行，不影响 X 应用与网页的正常网络。
 >
 > 💡 语法使用 Loon 旧版重写语法（`正则 307 twitter://目标`），兼容 Loon 3.x；307 直链不经中间页，且不被 Safari 启发式缓存。
+
+## Egern 配置
+
+Egern 主配置 `modules` 中新增一项（远程模块，自动更新）：
+
+```yaml
+modules:
+  - name: "X-jump"
+    url: "https://cxk9999.github.io/X-jump/egern_xjump.module.yaml"
+    update_interval: 86400
+    enabled: true
+```
+
+模块内含 `url_rewrites`（4 条 307 深链规则）+ `mitm.hostnames = x.com, twitter.com`。
+
+> ⚠️ 启用前需在 Egern 中安装并信任 MitM 根证书（MitM 仅对 `x.com` / `twitter.com` 两个域名生效，不做子域名泛解析）。
+>
+> 💡 与圈 X / Loon 版完全一致的安全原则：只劫持主页/推文，`/i/...`、`/api/...`、功能页、子域名一律放行。URL 重写 `status_code: 307` 直接返回重定向到 `twitter://`，不经中间页。
 
 ## 部署
 
