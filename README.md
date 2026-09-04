@@ -29,10 +29,10 @@ https://cxk9999.github.io/X-jump/
 
 ```ini
 [rewrite_remote]
-https://cxk9999.github.io/X-jump/qx_rewrite.conf, tag=X-jump, update-interval=86400, enabled=true
+https://cxk9999.github.io/X-jump/qx_rewrite.conf, tag=X-jump, enabled=true
 ```
 
-远程文件内容即为下方的 rewrite + mitm，后续修改只需更新仓库，圈 X 会自动拉取。
+远程文件内容即为下方的 rewrite + mitm，后续修改只需更新仓库，圈 X 会自动拉取（更新间隔在圈 X 订阅界面自行设置）。
 
 ### 方式二：手动粘贴
 
@@ -85,13 +85,12 @@ hostname = x.com, twitter.com
 
 ## Egern 配置
 
-Egern 主配置 `modules` 中新增一项（远程模块，自动更新）：
+Egern 主配置 `modules` 中新增一项（远程模块，更新间隔在 Egern 模块设置界面自行设置）：
 
 ```yaml
 modules:
   - name: "X-jump"
     url: "https://cxk9999.github.io/X-jump/egern_xjump.module.yaml"
-    update_interval: 86400
     enabled: true
 ```
 
