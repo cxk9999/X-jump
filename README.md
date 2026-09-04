@@ -22,6 +22,19 @@ https://cxk9999.github.io/X-jump/
 
 ## Quantumult X 配置
 
+### 方式一：远程订阅（推荐）
+
+在圈 X 主配置的 `[rewrite_remote]` 下新增一行：
+
+```ini
+[rewrite_remote]
+https://cxk9999.github.io/X-jump/qx_rewrite.conf, tag=X-jump, update-interval=86400, enabled=true
+```
+
+远程文件内容即为下方的 rewrite + mitm，后续修改只需更新仓库，圈 X 会自动拉取。
+
+### 方式二：手动粘贴
+
 ```ini
 [rewrite_local]
 ^https?:\/\/x\.com\/.* url 302 https://cxk9999.github.io/X-jump/?url=$0
