@@ -37,12 +37,19 @@ https://cxk9999.github.io/X-jump/qx_rewrite.conf, tag=X-jump, update-interval=86
 
 ```ini
 [rewrite_local]
-^https?:\/\/x\.com\/.* url 302 https://cxk9999.github.io/X-jump/?url=$0
-^https?:\/\/twitter\.com\/.* url 302 https://cxk9999.github.io/X-jump/?url=$0
+# 推文：x.com/用户名/status/推文ID（仅数字ID，用户名段排除保留路径）
+^https?:\/\/x\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+\/status\/\d+ url 302 https://cxk9999.github.io/X-jump/?url=$0
+^https?:\/\/twitter\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]+\/status\/\d+ url 302 https://cxk9999.github.io/X-jump/?url=$0
+# 用户主页：x.com/用户名（单段路径，排除 i/api/home/messages 等保留路径）
+^https?:\/\/x\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]{1,15}\/?(\?.*)?$ url 302 https://cxk9999.github.io/X-jump/?url=$0
+^https?:\/\/twitter\.com\/(?!(?:i|api|home|messages|explore|notifications|search|settings|compose|intent|intents|share|bookmarks|login|signup|tos|privacy|about|jobs|help|download|account|hashtag|lists|people|trends|events|assets|static|oauth|auth)\b)[A-Za-z0-9_]{1,15}\/?(\?.*)?$ url 302 https://cxk9999.github.io/X-jump/?url=$0
 
 [mitm]
-hostname = x.com,*.x.com,twitter.com,*.twitter.com
+# 只对 x.com / twitter.com 两个域名本身启用 MitM，不做 *. 泛解析，避免误伤接口子域名
+hostname = x.com,twitter.com
 ```
+
+> ⚠️ 重要：规则**只能窄不能宽**。不要把 `\/.*` 之类的宽匹配加回来——那会让 X 应用自身的接口请求也被跳转，导致 X 断网。远程订阅版与手动版内容一致。
 
 ## 部署
 
@@ -52,4 +59,5 @@ hostname = x.com,*.x.com,twitter.com,*.twitter.com
 ## 注意事项
 
 - 圈 X 能否拦截所有 x.com 点击，取决于 iOS 的 Universal Link 是否在系统层先接管。Pages 部署成功后，Rewrite 对 Safari / Telegram 的实际效果仍需真机测试。
+- 若 X 应用存在证书固定（cert pinning），MitM 本身可能使其断网，此时需放弃 MitM 方案。
 - `twitter://user?screen_name=...` 与 `twitter://status?id=...` 为已验证可用的 Deep Link 格式。
