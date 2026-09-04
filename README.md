@@ -8,9 +8,7 @@
 
 ## 访问地址
 
-```
-https://cxk9999.github.io/X-jump/
-```
+[打开 X-jump 跳转页](https://cxk9999.github.io/X-jump/)
 
 X-jump 跳转页（GitHub Pages）：打开后自动把 X 链接解析为 `twitter://` 深链并唤起 X 分身应用，可直接访问测试。
 
